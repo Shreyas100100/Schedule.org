@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "./firebase";
 import { Form, Card, Container, Button, Table, Spinner } from "react-bootstrap";
@@ -38,11 +38,12 @@ export default function MyTasks() {
   };
 
   return (
-    <Container className="d-flex flex-column justify-content-center align-items-center ">
-      <h2 style={{ textAlign: "center", paddingTop: "2rem" }}>Schedule </h2>
+    <Container className="d-flex flex-column justify-content-center align-items-center">
+      <h2 style={{ textAlign: "center", paddingTop: "2rem" }}>Schedule</h2>
       <Card
         style={{
-          width: "40%",
+          width: "100%",
+          maxWidth: "600px",
           padding: "1rem",
           marginBottom: "1rem",
           alignItems: "center",
@@ -50,17 +51,16 @@ export default function MyTasks() {
           display: "flex",
         }}
       >
-        <Form onSubmit={handleSubmit} className="d-flex">
-          <Form.Group className="flex-grow-1" style={{ marginRight: "0.5rem" }}>
+        <Form onSubmit={handleSubmit} className="d-flex flex-column w-100">
+          <Form.Group className="mb-3">
             <Form.Control
               type="text"
               value={vId}
               onChange={(e) => setVId(e.target.value)}
               placeholder="Enter vId"
-              className="mx-auto"
             />
           </Form.Group>
-          <Button variant="primary" type="submit" className="mx-auto">
+          <Button variant="primary" type="submit">
             Fetch Tasks
           </Button>
         </Form>
@@ -72,7 +72,7 @@ export default function MyTasks() {
             <span className="visually-hidden">Loading...</span>
           </Spinner>
         ) : tasks.length === 0 ? (
-          <Card style={{ width: "80%", marginTop: "2rem" }}>
+          <Card style={{ width: "100%", maxWidth: "600px", marginTop: "2rem" }}>
             <Card.Body>
               <Card.Title style={{ textAlign: "center" }}>No Schedule!</Card.Title>
             </Card.Body>
@@ -80,16 +80,18 @@ export default function MyTasks() {
         ) : (
           <Card
             style={{
-              width: "60%",
-              padding: "2rem",
+              width: "100%",
+              maxWidth: "800px",
+              padding: "1rem",
               marginTop: "2rem",
               margin: "auto",
+              overflowX: "auto",
             }}
           >
             <Card.Title>
               <h2 style={{ textAlign: "center" }}>PRIORITY</h2>
             </Card.Title>
-            <Table striped bordered hover style={{ width: "100%" }}>
+            <Table striped bordered hover responsive>
               <thead>
                 <tr>
                   <th>No.</th>

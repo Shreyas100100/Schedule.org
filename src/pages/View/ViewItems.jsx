@@ -1,5 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { collection, getDocs, where, query } from "firebase/firestore";
+import {
+  collection,
+  getDocs,
+  where,
+  query,
+  deleteDoc,
+  doc,
+  updateDoc,
+} from "firebase/firestore";
 import { db, auth } from "../../firebase";
 import {
   Form,
@@ -10,12 +18,18 @@ import {
   Col,
   Table,
   Spinner,
+  Modal,
 } from "react-bootstrap";
 
 export default function ViewItems() {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [userId, setUserId] = useState(null);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [deleteItemId, setDeleteItemId] = useState(null);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [editItem, setEditItem] = useState(null);
+  const [newItemName, setNewItemName] = useState("");
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
@@ -32,25 +46,73 @@ export default function ViewItems() {
   useEffect(() => {
     const fetchItems = async () => {
       try {
-        // Construct a query to filter items based on userId
-        const q = query(collection(db, "item"), where("userId", "==", userId));
-        const querySnapshot = await getDocs(q);
-        const itemsList = querySnapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
-        setItems(itemsList);
-        setLoading(false);
+        if (userId) {
+          const q = query(
+            collection(db, "item"),
+            where("userId", "==", userId)
+          );
+          const querySnapshot = await getDocs(q);
+          const itemsList = querySnapshot.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+          }));
+          setItems(itemsList);
+          setLoading(false);
+        }
       } catch (error) {
         console.error("Error fetching items: ", error);
         setLoading(false);
       }
     };
 
-    if (userId) {
-      fetchItems();
+    fetchItems();
+  }, [userId]);
+
+  const handleDelete = async (itemId) => {
+    try {
+      await deleteDoc(doc(db, "item", itemId));
+      setItems(items.filter((item) => item.id !== itemId));
+      setShowDeleteModal(false);
+    } catch (error) {
+      console.error("Error deleting item: ", error);
     }
-  }, [userId]); // Fetch items when userId changes
+  };
+
+  const handleCloseDeleteModal = () => {
+    setShowDeleteModal(false);
+  };
+
+  const handleShowDeleteModal = (itemId) => {
+    setShowDeleteModal(true);
+    setDeleteItemId(itemId);
+  };
+
+  const handleCloseEditModal = () => {
+    setShowEditModal(false);
+    setEditItem(null);
+    setNewItemName("");
+  };
+
+  const handleShowEditModal = (item) => {
+    setShowEditModal(true);
+    setEditItem(item);
+    setNewItemName(item.itemName);
+  };
+
+  const handleUpdateItem = async () => {
+    try {
+      await updateDoc(doc(db, "item", editItem.id), {
+        itemName: newItemName,
+      });
+      const updatedItems = items.map((item) =>
+        item.id === editItem.id ? { ...item, itemName: newItemName } : item
+      );
+      setItems(updatedItems);
+      handleCloseEditModal();
+    } catch (error) {
+      console.error("Error updating item: ", error);
+    }
+  };
 
   if (loading) {
     return (
@@ -63,7 +125,7 @@ export default function ViewItems() {
   }
 
   return (
-    <Container className="d-flex flex-column justify-content-center align-items-center vh-100">
+    <Container className="d-flex flex-column justify-content-center align-items-center">
       <Card
         style={{ width: "40rem", borderRadius: "1rem" }}
         className="text-center p-4 shadow"
@@ -72,24 +134,74 @@ export default function ViewItems() {
         <Table striped bordered hover>
           <thead>
             <tr>
-              <th>ID</th>
+              <th>No.</th>
               <th>Item Name</th>
-              <th>Item Owner</th>
-              {/* Add more table headers as needed */}
+              <th></th>
+              <th></th>
             </tr>
           </thead>
           <tbody>
-            {items.map((item) => (
+            {items.map((item, index) => (
               <tr key={item.id}>
-                <td>{item.id}</td>
+                <td>{index + 1}</td>
                 <td>{item.itemName}</td>
-                <td>{item.itemOwner}</td>
-                {/* Add more table cells as needed */}
+                <td>
+                  <Button
+                    variant="danger"
+                    onClick={() => handleShowDeleteModal(item.id)}
+                  >
+                    Delete
+                  </Button>{" "}
+                </td>
+                <td>
+                  <Button
+                    variant="primary"
+                    onClick={() => handleShowEditModal(item)}
+                  >
+                    Edit
+                  </Button>
+                </td>
               </tr>
             ))}
           </tbody>
         </Table>
       </Card>
+
+      <Modal show={showDeleteModal} onHide={handleCloseDeleteModal}>
+        <Modal.Header closeButton>
+          <Modal.Title>Delete Item</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>Are you sure you want to delete this item?</Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleCloseDeleteModal}>
+            Cancel
+          </Button>
+          <Button variant="danger" onClick={() => handleDelete(deleteItemId)}>
+            Delete
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      <Modal show={showEditModal} onHide={handleCloseEditModal}>
+        <Modal.Header closeButton>
+          <Modal.Title>Edit Item</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form.Control
+            type="text"
+            value={newItemName}
+            onChange={(e) => setNewItemName(e.target.value)}
+          />
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleCloseEditModal}>
+            Cancel
+          </Button>
+          <Button variant="primary" onClick={handleUpdateItem}>
+            Update
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </Container>
   );
 }

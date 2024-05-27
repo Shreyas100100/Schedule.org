@@ -88,7 +88,7 @@ export default function ViewUsers() {
 
   if (loading) {
     return (
-      <Container className="d-flex justify-content-center align-items-center vh-100">
+      <Container className="d-flex justify-content-center align-items-center vh-100" >
         <Spinner animation="border" role="status">
           <span className="visually-hidden">Loading...</span>
         </Spinner>
@@ -97,18 +97,19 @@ export default function ViewUsers() {
   }
 
   return (
-    <Container className="d-flex flex-column justify-content-center align-items-center vh-100">
-      <Card style={{ width: "80%", padding: "2rem" }}>
+    <Container className="d-flex flex-column justify-content-center align-items-center"style={{paddingTop:"2rem"}}>
+      <Card style={{ width: "100%", maxWidth: "800px", padding: "1rem", overflowX: "auto" }}>
         <Card.Title>
           <h2 style={{ textAlign: "center" }}>View Users</h2>
         </Card.Title>
-        <Table striped bordered hover>
+        <Table striped bordered hover responsive>
           <thead>
             <tr>
-              <th>#</th>
+              <th>No.</th>
               <th>User Name</th>
               <th>vID</th>
-              <th>Actions</th>
+              <th></th>
+              <th></th>
             </tr>
           </thead>
           <tbody>
@@ -119,8 +120,9 @@ export default function ViewUsers() {
                 <td>{user.vId}</td>
                 <td>
                   <Button variant="primary" size="sm" onClick={() => handleEdit(user)}>
-                    Edit
+                    Update
                   </Button>{" "}
+                  </td><td>
                   <Button variant="danger" size="sm" onClick={() => handleDelete(user.id)}>
                     Delete
                   </Button>
