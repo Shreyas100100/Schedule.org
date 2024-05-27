@@ -2,9 +2,7 @@ import React, { useState } from "react";
 import { Form, Container, Card, Button, Row, Col } from "react-bootstrap";
 import { TextField } from "@mui/material";
 import logo from "../images/Logo.PNG";
-import {
-  createUserWithEmailAndPassword,
-} from "firebase/auth";
+import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../firebase";
 import { useNavigate, Link } from "react-router-dom"; // Import Link
 import MuiAlert from "@mui/material/Alert";
@@ -95,84 +93,59 @@ export default function Signup() {
   return (
     <Container className="d-flex flex-column justify-content-center align-items-center vh-100">
       <Card
-        style={{ width: "60rem", height: "23rem", borderRadius: "1rem" }}
+        style={{ width: "100%", maxWidth: "600px", borderRadius: "1rem" }}
         className="text-center p-4 shadow"
       >
         <Row>
-          <Col>
-            <div style={{ width: "20rem", height: "20rem", textAlign: "left" }}>
+          <Col xs={12} md={6}>
+            <div className="text-left">
               <img src={logo} alt="Logo" className="mb-4" />
-              <br></br>
               <h2>SIGN UP</h2>
-              <br></br>
               <p>Create your HASHTAG Account</p>
             </div>
           </Col>
-          <Col>
-            <Row className="mb-2">
-              <div>
-                <Col>
-                  <br style={{ paddingTop: "2rem" }}></br>
-                  <TextField
-                    type="email"
-                    label="Email"
-                    value={email}
-                    onChange={handleEmailChange}
-                    style={{ height: "2.5rem", width: "30rem" }}
-                    error={!!validationErrors.email}
-                    helperText={validationErrors.email}
-                  />
-                </Col>
-                <br style={{ paddingTop: "2rem" }}></br>
-                <Col>
-                  <TextField
-                    type="password"
-                    label="Password"
-                    style={{ height: "2.5rem", width: "30rem" }}
-                    value={password}
-                    onChange={handlePasswordChange}
-                    error={!!validationErrors.password}
-                    helperText={validationErrors.password}
-                  />
-                </Col>
-                <br style={{ paddingTop: "2rem" }}></br>
-                <Col>
-                  <TextField
-                    type="password"
-                    label="Confirm Password"
-                    style={{ height: "3rem", width: "30rem" }}
-                    value={confirmPassword}
-                    onChange={handleConfirmPasswordChange}
-                    error={!!validationErrors.confirmPassword}
-                    helperText={validationErrors.confirmPassword}
-                  />
-                </Col>
-              </div>
-            </Row>
-            <br style={{ paddingTop: "3rem" }}></br>
-            <div>
-              <Row>
-                <Col>
-                  <br style={{ paddingTop: "3rem" }}></br>
-                  <span>Already Registered ? </span>
-
-                  <Link to="/login" style={{ textDecoration: "none" }}>
-                    Log In 
-                  </Link>
-                </Col>
-                <br style={{ paddingTop: "3rem" }}></br>
-                <Col style={{ paddingRight: "5rem" }}>
-                  <Button
-                    variant="primary"
-                    className="mt-3"
-                    onClick={handleSubmit}
-                    style={{ borderRadius: "2rem", width: "6rem" }}
-                  >
-                    SIGN UP
-                  </Button>
-                </Col>
-              </Row>
-            </div>
+          <Col xs={12} md={6}>
+            <Form onSubmit={handleSubmit}>
+              <TextField
+                type="email"
+                label="Email"
+                value={email}
+                onChange={handleEmailChange}
+                className="mb-2 w-100"
+                error={!!validationErrors.email}
+                helperText={validationErrors.email}
+              />
+              <TextField
+                type="password"
+                label="Password"
+                value={password}
+                onChange={handlePasswordChange}
+                className="mb-2 w-100"
+                error={!!validationErrors.password}
+                helperText={validationErrors.password}
+              />
+              <TextField
+                type="password"
+                label="Confirm Password"
+                value={confirmPassword}
+                onChange={handleConfirmPasswordChange}
+                className="mb-3 w-100"
+                error={!!validationErrors.confirmPassword}
+                helperText={validationErrors.confirmPassword}
+              />
+              <Button variant="link" className="w-100 mb-3">
+                <Link to="/login" style={{ textDecoration: "none" }}>
+                  Already Registered ? Log In
+                </Link>
+              </Button>
+              <Button
+                variant="primary"
+                type="submit"
+                className="w-100"
+              >
+                SIGN UP
+              </Button>
+            </Form>
           </Col>
         </Row>
       </Card>
