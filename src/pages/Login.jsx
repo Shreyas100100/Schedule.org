@@ -68,7 +68,9 @@ export default function Login() {
                 onChange={(e) => setPassword(e.target.value)}
               />
               <Button variant="link" className="w-100 mb-3">
-                Forgot password ?
+                <Link to="/forgot-password" style={{ textDecoration: "none" }}>
+                  Forgot password?
+                </Link>
               </Button>
               <Button variant="link" className="w-100 mb-3">
                 <Link to="/signup" style={{ textDecoration: "none" }}>

@@ -3,12 +3,12 @@ import { getAuth } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 
 const firebaseConfig = {
-  apiKey: "AIzaSyD9y7J4pPoFiThVm4ANU28IljeNrFiFKUA",
-  authDomain: "opd-system-cd627.firebaseapp.com",
-  projectId: "opd-system-cd627",
-  storageBucket: "opd-system-cd627.appspot.com",
-  messagingSenderId: "1076078044312",
-  appId: "1:1076078044312:web:4bdcfbf476d0ce621f9ced"
+  apiKey: "AIzaSyCKkWEe-nSSIl5-XiiRQFiu7qiZ5XX_BYw",
+  authDomain: "schedule-org-se.firebaseapp.com",
+  projectId: "schedule-org-se",
+  storageBucket: "schedule-org-se.appspot.com",
+  messagingSenderId: "24749583339",
+  appId: "1:24749583339:web:3c85bacd152725965fc7ae"
 };
 
 const app = initializeApp(firebaseConfig);

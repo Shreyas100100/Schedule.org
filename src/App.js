@@ -13,7 +13,6 @@ import Signup from "./pages/Signup";
 import Nvbr from "./Navbar/Navbar";
 import "./index.css";
 import "bootstrap/dist/css/bootstrap.min.css";
-import Op2 from "./pages/View/ViewItems";
 import Profile from "./pages/Profile";
 import AddUser from "./pages/add/AddUser";
 import AddItem from "./pages/add/AddItem";
@@ -22,6 +21,7 @@ import ViewItems from "./pages/View/ViewItems";
 import ViewTasks from "./pages/View/ViewTasks";
 import ViewUsers from "./pages/View/ViewUsers";
 import MyTasks from "./MyTasks";
+import ForgotPassword from "./pages/ForgotPassword";
 
 function App() {
   return (
@@ -43,6 +43,7 @@ const ProtectedRoutes = () => {
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/*" element={<Navigate to="/login" />} />
       </Routes>
     );
@@ -63,6 +64,7 @@ const ProtectedRoutes = () => {
           <Route path="/addUser" element={<AddUser />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/myTasks" element={<MyTasks />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
         </Routes>
         <MDBFooter bgColor="light" className="text-center text-lg-left mt-auto">
           <div
