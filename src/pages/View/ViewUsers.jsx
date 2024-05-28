@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { collection, getDocs, deleteDoc, doc, updateDoc, query, where, getDoc } from "firebase/firestore";
-import { db } from "../../firebase";
+import { collection, getDocs, updateDoc, query, where,doc,getDoc,deleteDoc } from "firebase/firestore";
+import { db, auth } from "../../firebase";
 import { Table, Container, Card, Spinner, Button, Modal, Form, Alert } from "react-bootstrap";
 
 export default function ViewUsers() {
@@ -11,25 +11,55 @@ export default function ViewUsers() {
   const [newName, setNewName] = useState("");
   const [newVid, setNewVid] = useState("");
   const [error, setError] = useState("");
+  const [userId, setUserId] = useState(null);
 
   useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        const querySnapshot = await getDocs(collection(db, "usr"));
-        const usersList = querySnapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
-        setUsers(usersList);
-        setLoading(false);
-      } catch (error) {
-        console.error("Error fetching users: ", error);
-        setLoading(false);
+    const unsubscribe = auth.onAuthStateChanged((user) => {
+      if (user) {
+        setUserId(user.uid);
+      } else {
+        setUserId(null);
       }
-    };
+    });
 
-    fetchUsers();
+    return () => unsubscribe();
   }, []);
+
+  useEffect(() => {
+    if (userId) {
+      fetchUsers();
+    }
+  }, [userId]);
+
+  useEffect(() => {
+    if (newVid && users.length > 0) {
+      // Update vId in all users when it changes
+      const updatedUsers = users.map((user) => {
+        return {
+          ...user,
+          vId: newVid,
+        };
+      });
+      setUsers(updatedUsers);
+      updateTasks(newVid); // Call function to update tasks
+    }
+  }, [newVid]);
+
+  const fetchUsers = async () => {
+    try {
+      const q = query(collection(db, "usr"), where("userId", "==", userId));
+      const querySnapshot = await getDocs(q);
+      const usersList = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      setUsers(usersList);
+      setLoading(false);
+    } catch (error) {
+      console.error("Error fetching users: ", error);
+      setLoading(false);
+    }
+  };
 
   const handleEdit = (user) => {
     setEditUser(user);
@@ -52,13 +82,7 @@ export default function ViewUsers() {
             uName: newName,
             vId: newVid,
           });
-          // Refresh users after edit
-          const querySnapshot = await getDocs(collection(db, "usr"));
-          const usersList = querySnapshot.docs.map((doc) => ({
-            id: doc.id,
-            ...doc.data(),
-          }));
-          setUsers(usersList);
+          fetchUsers();
           setShowEditModal(false);
           setError("");
         } else {
@@ -74,15 +98,23 @@ export default function ViewUsers() {
   const handleDelete = async (userId) => {
     try {
       await deleteDoc(doc(db, "usr", userId));
-      // Refresh users after delete
-      const querySnapshot = await getDocs(collection(db, "usr"));
-      const usersList = querySnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-      setUsers(usersList);
+      fetchUsers();
     } catch (error) {
       console.error("Error deleting user: ", error);
+    }
+  };
+
+  const updateTasks = async (newVid) => {
+    try {
+      const tasksRef = collection(db, "tasks");
+      const q = query(tasksRef, where("vId", "==", newVid));
+      const querySnapshot = await getDocs(q);
+      
+      querySnapshot.forEach(async (doc) => {
+        await updateDoc(doc.ref, { vId: newVid });
+      });
+    } catch (error) {
+      console.error("Error updating tasks: ", error);
     }
   };
 
@@ -97,7 +129,7 @@ export default function ViewUsers() {
   }
 
   return (
-    <Container className="d-flex flex-column justify-content-center align-items-center"style={{paddingTop:"2rem"}}>
+    <Container className="d-flex flex-column justify-content-center align-items-center" style={{ paddingTop: "2rem" }}>
       <Card style={{ width: "100%", maxWidth: "800px", padding: "1rem", overflowX: "auto" }}>
         <Card.Title>
           <h2 style={{ textAlign: "center" }}>View Users</h2>
@@ -122,7 +154,8 @@ export default function ViewUsers() {
                   <Button variant="primary" size="sm" onClick={() => handleEdit(user)}>
                     Update
                   </Button>{" "}
-                  </td><td>
+                </td>
+                <td>
                   <Button variant="danger" size="sm" onClick={() => handleDelete(user.id)}>
                     Delete
                   </Button>

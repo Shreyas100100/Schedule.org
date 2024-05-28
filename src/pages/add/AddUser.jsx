@@ -3,7 +3,7 @@ import { doc, setDoc, collection } from "firebase/firestore";
 import { db, auth } from "../../firebase";
 import { Snackbar } from "@mui/material";
 import MuiAlert from "@mui/material/Alert";
-import { Form, Card, Container, Row, Col, Button,Spinner } from "react-bootstrap";
+import { Form, Card, Container, Row, Col, Button } from "react-bootstrap";
 import { nanoid } from "nanoid";
 
 export default function AddUser() {
@@ -17,7 +17,7 @@ export default function AddUser() {
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
       if (user) {
-        setUserId(user.uid.slice(0, 5)); // Simplify user ID by taking the first 5 characters
+        setUserId(user.uid); // Use the full user ID
       } else {
         setUserId(null);
       }
@@ -51,7 +51,7 @@ export default function AddUser() {
         vId: newDocId,
         uName: uName,
         uOrg: uOrg,
-        userId: userId,
+        userId: userId, // Store the full user ID
       });
 
       setSnackbarMessage("User added successfully");

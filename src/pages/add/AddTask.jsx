@@ -15,11 +15,11 @@ export default function AddTask() {
   const [userId, setUserId] = useState(null);
   const [userNames, setUserNames] = useState([]);
   const [products, setProducts] = useState([]);
-  const [voltages, setVoltages] = useState([]);
+  const [varieties, setVarieties] = useState([]);
   const [loading, setLoading] = useState(true);
   const [assignedAt, setAssignedAt] = useState("");
   const [quantity, setQuantity] = useState("");
-  const [voltage, setVoltage] = useState("");
+  const [variety, setvariety] = useState("");
   const [remarks, setRemarks] = useState("");
 
   useEffect(() => {
@@ -38,10 +38,12 @@ export default function AddTask() {
     const fetchUserNames = async () => {
       try {
         const querySnapshot = await getDocs(collection(db, "usr"));
-        const names = querySnapshot.docs.map((doc) => {
-          const userData = doc.data();
-          return { name: userData.uName, vId: userData.vId }; // Include vId along with the name
-        });
+        const names = querySnapshot.docs
+          .map((doc) => {
+            const userData = doc.data();
+            return { name: userData.uName, vId: userData.vId, userId: userData.userId };
+          })
+          .filter((user) => user.userId === userId);
         setUserNames(names);
         setLoading(false);
       } catch (error) {
@@ -50,7 +52,9 @@ export default function AddTask() {
       }
     };
 
-    fetchUserNames();
+    if (userId) {
+      fetchUserNames();
+    }
   }, [userId]);
 
   useEffect(() => {
@@ -60,12 +64,9 @@ export default function AddTask() {
         const productList = querySnapshot.docs
           .map((doc) => {
             const itemData = doc.data();
-            if (itemData.userId === userId) {
-              return { itemId: doc.id, itemName: itemData.itemName };
-            }
-            return null;
+            return { itemId: doc.id, itemName: itemData.itemName, userId: itemData.userId };
           })
-          .filter((item) => item !== null);
+          .filter((item) => item.userId === userId);
         setProducts(productList);
       } catch (error) {
         console.error("Error fetching products: ", error);
@@ -78,27 +79,31 @@ export default function AddTask() {
   }, [userId]);
 
   useEffect(() => {
-    const fetchVoltages = async () => {
+    const fetchVarieties = async () => {
       try {
-        const querySnapshot = await getDocs(collection(db, "voltages"));
-        const voltageList = querySnapshot.docs
-          .map((doc) => doc.data().voltage)
-          .filter((v) => v !== null);
-        setVoltages(voltageList);
+        const querySnapshot = await getDocs(collection(db, "varieties"));
+        const varietyList = querySnapshot.docs
+          .map((doc) => {
+            const varietyData = doc.data();
+            return { variety: varietyData.variety, userId: varietyData.userId };
+          })
+          .filter((v) => v.userId === userId)
+          .map((v) => v.variety);
+        setVarieties(varietyList);
       } catch (error) {
-        console.error("Error fetching voltages: ", error);
+        console.error("Error fetching varieties: ", error);
       }
     };
 
     if (userId) {
-      fetchVoltages();
+      fetchVarieties();
     }
   }, [userId]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!product || !itemOwner || !assignedAt || !quantity || !voltage || !remarks) {
+    if (!product || !itemOwner || !assignedAt || !quantity || !variety ) {
       setSnackbarMessage("All fields are required.");
       setSeverity("error");
       setOpenSnackbar(true);
@@ -106,26 +111,22 @@ export default function AddTask() {
     }
 
     try {
-      // Find the selected user object based on the itemOwner
       const selectedUser = userNames.find((user) => user.name === itemOwner);
 
-      // Check if the selectedUser exists and has a vId
       if (!selectedUser || !selectedUser.vId) {
         throw new Error("Owner not found or missing vId.");
       }
 
-      // Add task document with userId, itemId, itemName, itemOwner, assignedAt, deadline, quantity, voltage, remarks, and vId
       await setDoc(doc(collection(db, "tasks")), {
         userId,
         itemId: products.find((p) => p.itemName === product)?.itemId || "",
         itemName: product,
         itemOwner,
         assignedAt,
-        // deadline,
         quantity,
-        voltage,
+        variety,
         remarks,
-        vId: selectedUser.vId, // Include the vId
+        vId: selectedUser.vId,
       });
 
       setSnackbarMessage("Task added successfully!");
@@ -223,14 +224,14 @@ export default function AddTask() {
                 />
               </Col>
               <Col xs={12} md={6} lg={4} className="mb-3">
-                <Form.Label>Voltage</Form.Label>
+                <Form.Label>Variety</Form.Label>
                 <Form.Select
-                  value={voltage}
-                  onChange={(e) => setVoltage(e.target.value)}
-                  aria-label="Choose Voltage"
+                  value={variety}
+                  onChange={(e) => setvariety(e.target.value)}
+                  aria-label="Choose Variety"
                 >
-                  <option value="">Choose Voltage</option>
-                  {voltages.map((v, index) => (
+                  <option value="">Choose Variety</option>
+                  {varieties.map((v, index) => (
                     <option key={index} value={v}>
                       {v}
                     </option>
@@ -255,7 +256,7 @@ export default function AddTask() {
                   type="submit"
                   style={{ borderRadius: "0.4rem", width: "12rem" }}
                 >
-                  ADD Task
+                  Add Task
                 </Button>
               </Col>
             </Row>

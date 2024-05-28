@@ -6,10 +6,10 @@ import MuiAlert from "@mui/material/Alert";
 import { Form, Card, Container, Row, Col, Button } from "react-bootstrap";
 import { nanoid } from "nanoid";  // Import nanoid
 
-export default function AddItemAndVoltage() {
+export default function AddItemAndvariety() {
   const [itemName, setItemName] = useState("");
   const [itemDescription, setItemDescription] = useState("");
-  const [voltage, setVoltage] = useState("");
+  const [variety, setvariety] = useState("");
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [severity, setSeverity] = useState("success");
@@ -61,33 +61,33 @@ export default function AddItemAndVoltage() {
     }
   };
 
-  const handleSubmitVoltage = async (e) => {
+  const handleSubmitvariety = async (e) => {
     e.preventDefault();
 
-    if (!voltage) {
-      setSnackbarMessage("Voltage is required.");
+    if (!variety) {
+      setSnackbarMessage("variety is required.");
       setSeverity("error");
       setOpenSnackbar(true);
       return;
     }
 
     try {
-      const voltageId = nanoid(5);  // Generate a short, unique voltageId
+      const varietyId = nanoid(5);  // Generate a short, unique varietyId
 
-      // Add voltage document with userId and voltage
-      await setDoc(doc(db, "voltages", voltageId), {
+      // Add variety document with userId and variety
+      await setDoc(doc(db, "varieties", varietyId), {
         userId,
-        voltage,
-        voltageId,  // Include voltageId
+        variety,
+        varietyId,  // Include varietyId
       });
 
-      setSnackbarMessage("Voltage added successfully!");
+      setSnackbarMessage("variety added successfully!");
       setSeverity("success");
       setOpenSnackbar(true);
-      setVoltage("");
+      setvariety("");
     } catch (error) {
-      console.error("Error adding voltage: ", error);
-      setSnackbarMessage("Failed to add voltage. Please try again.");
+      console.error("Error adding variety: ", error);
+      setSnackbarMessage("Failed to add variety. Please try again.");
       setSeverity("error");
       setOpenSnackbar(true);
     }
@@ -146,24 +146,24 @@ export default function AddItemAndVoltage() {
             <Card style={{ alignItems: "center", width: "18rem" }}>
               <Card.Title>
                 <h2 style={{ textAlign: "center", paddingTop: "2rem" }}>
-                  Add Voltage
+                  Add Variety
                 </h2>
               </Card.Title>
-              <Form onSubmit={handleSubmitVoltage}>
+              <Form onSubmit={handleSubmitvariety}>
                 <Col style={{ alignContent: "center", paddingTop: "2rem", width: "100%" }}>
                   <Form.Group>
-                    <Form.Label>Voltage</Form.Label>
+                    <Form.Label>Variety</Form.Label>
                     <Form.Control
                       type="text"
-                      value={voltage}
-                      onChange={(e) => setVoltage(e.target.value)}
+                      value={variety}
+                      onChange={(e) => setvariety(e.target.value)}
                     />
                   </Form.Group>
                 </Col>
                 <Row className="justify-content-center" style={{ paddingTop: "2rem", paddingBottom: "2rem" }}>
                   <Col className="text-center">
                     <Button variant="primary" className="mt-3" type="submit" style={{ borderRadius: "0.4rem", width: "12rem" }}>
-                      ADD Voltage
+                      Add Variety
                     </Button>
                   </Col>
                 </Row>

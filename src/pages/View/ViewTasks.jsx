@@ -43,9 +43,10 @@ export default function ViewTasks() {
         }
       }
     };
-
+  
     fetchTasks();
   }, [userId]);
+  
 
   const handleEditClick = (task) => {
     setCurrentTask(task);
@@ -58,11 +59,20 @@ export default function ViewTasks() {
         const taskDocRef = doc(db, "tasks", currentTask.id);
         await updateDoc(taskDocRef, currentTask);
         setShowEditModal(false);
+        // Refresh tasks after edit
+        const q = query(collection(db, "tasks"), where("userId", "==", userId));
+        const querySnapshot = await getDocs(q);
+        const tasksList = querySnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        setTasks(tasksList);
       } catch (error) {
         console.error("Error updating task: ", error);
       }
     }
   };
+  
 
   const handleEditChange = (e) => {
     const { name, value } = e.target;
@@ -125,8 +135,9 @@ export default function ViewTasks() {
                   <th>Item Owner</th>
                   <th>Item Owner ID</th>
                   <th>Assigned At</th>
-                  <th>Voltage</th>
+                  <th>Variety</th>
                   <th>Quantity</th>
+                  <th>Quote</th>
                   <th></th>
                   <th></th>
                 </tr>
@@ -139,8 +150,10 @@ export default function ViewTasks() {
                     <td>{task.itemOwner}</td>
                     <td>{task.vId}</td>
                     <td>{formatDate(task.assignedAt)}</td>
-                    <td>{task.voltage}</td>
+                    
+                    <td>{task.variety}</td>
                     <td>{task.quantity}</td>
+                    <td>{task.quote}</td>
                     <td>
                       <Button variant="primary" onClick={() => handleEditClick(task)}>
                         Update
@@ -195,11 +208,11 @@ export default function ViewTasks() {
                 />
               </Form.Group>
               <Form.Group>
-                <Form.Label>Voltage</Form.Label>
+                <Form.Label>variety</Form.Label>
                 <Form.Control
                   type="text"
-                  name="voltage"
-                  value={currentTask.voltage}
+                  name="variety"
+                  value={currentTask.variety}
                   onChange={handleEditChange}
                 />
               </Form.Group>
@@ -209,6 +222,15 @@ export default function ViewTasks() {
                   type="text"
                   name="quantity"
                   value={currentTask.quantity}
+                  onChange={handleEditChange}
+                />
+              </Form.Group>
+              <Form.Group>
+                <Form.Label>vID</Form.Label>
+                <Form.Control
+                  type="text"
+                  name="vId"
+                  value={currentTask.vId}
                   onChange={handleEditChange}
                 />
               </Form.Group>
