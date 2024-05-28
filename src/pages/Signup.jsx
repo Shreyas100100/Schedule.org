@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Form, Container, Card, Button, Row, Col } from "react-bootstrap";
 import { TextField } from "@mui/material";
-import logo from "../images/Logo.PNG";
+import logo from "../images/logo.png";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../firebase";
 import { useNavigate, Link } from "react-router-dom"; // Import Link
@@ -99,9 +99,9 @@ export default function Signup() {
         <Row>
           <Col xs={12} md={6}>
             <div className="text-left">
-              <img src={logo} alt="Logo" className="mb-4" />
+              <img src={logo} alt="Logo" className="mb-2" style={{height:"8rem"}}/>
               <h2>SIGN UP</h2>
-              <p>Create your HASHTAG Account</p>
+              <p>SCHEDULE.ORG New User</p>
             </div>
           </Col>
           <Col xs={12} md={6}>

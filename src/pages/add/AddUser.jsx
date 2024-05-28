@@ -78,7 +78,7 @@ export default function AddUser() {
 
   return (
     <div>
-      <Container className="d-flex flex-column justify-content-center align-items-center vh-100">
+      <Container className="d-flex flex-column justify-content-center align-items-center" style={{paddingTop:"2rem"}}>
         <Card style={{ alignItems: "center", width: "20rem" }}>
           <Card.Title>
             <h2 style={{ textAlign: "center", paddingTop: "2rem" }}>

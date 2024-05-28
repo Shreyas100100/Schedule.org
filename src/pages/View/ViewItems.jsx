@@ -10,16 +10,9 @@ import {
 } from "firebase/firestore";
 import { db, auth } from "../../firebase";
 import {
-  Form,
-  Container,
-  Card,
-  Button,
-  Row,
-  Col,
-  Table,
-  Spinner,
-  Modal,
+  Form, Container, Card, Button, Table, Spinner, Modal,
 } from "react-bootstrap";
+import './ViewItems.css'; // Import custom CSS
 
 export default function ViewItems() {
   const [items, setItems] = useState([]);
@@ -125,46 +118,47 @@ export default function ViewItems() {
   }
 
   return (
-    <Container className="d-flex flex-column justify-content-center align-items-center">
-      <Card
-        style={{ width: "40rem", borderRadius: "1rem" }}
-        className="text-center p-4 shadow"
-      >
-        <Card.Title>Item List</Card.Title>
-        <Table striped bordered hover>
-          <thead>
-            <tr>
-              <th>No.</th>
-              <th>Item Name</th>
-              <th></th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
-            {items.map((item, index) => (
-              <tr key={item.id}>
-                <td>{index + 1}</td>
-                <td>{item.itemName}</td>
-                <td>
-                  <Button
-                    variant="danger"
-                    onClick={() => handleShowDeleteModal(item.id)}
-                  >
-                    Delete
-                  </Button>{" "}
-                </td>
-                <td>
-                  <Button
-                    variant="primary"
-                    onClick={() => handleShowEditModal(item)}
-                  >
-                    Edit
-                  </Button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </Table>
+    <Container className="d-flex flex-column justify-content-center align-items-center" style={{paddingTop:"2rem"}}>
+      <Card className="w-100" style={{ borderRadius: "1rem", maxWidth: "600px" }}>
+        <Card.Body className="text-center p-4 ">
+          <Card.Title>Item List</Card.Title>
+          <div className="table-responsive">
+            <Table striped bordered hover className="table-fixed">
+              <thead>
+                <tr>
+                  <th>No.</th>
+                  <th>Item Name</th>
+                  <th></th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                {items.map((item, index) => (
+                  <tr key={item.id}>
+                    <td>{index + 1}</td>
+                    <td>{item.itemName}</td>
+                    <td>
+                      <Button
+                        variant="danger"
+                        onClick={() => handleShowDeleteModal(item.id)}
+                      >
+                        Delete
+                      </Button>
+                    </td>
+                    <td>
+                      <Button
+                        variant="primary"
+                        onClick={() => handleShowEditModal(item)}
+                      >
+                        Edit
+                      </Button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </Table>
+          </div>
+        </Card.Body>
       </Card>
 
       <Modal show={showDeleteModal} onHide={handleCloseDeleteModal}>

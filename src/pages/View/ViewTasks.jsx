@@ -127,8 +127,8 @@ export default function ViewTasks() {
                   <th>Assigned At</th>
                   <th>Voltage</th>
                   <th>Quantity</th>
-                  <th>Edit</th>
-                  <th>Delete</th>
+                  <th></th>
+                  <th></th>
                 </tr>
               </thead>
               <tbody>
@@ -142,8 +142,8 @@ export default function ViewTasks() {
                     <td>{task.voltage}</td>
                     <td>{task.quantity}</td>
                     <td>
-                      <Button variant="warning" onClick={() => handleEditClick(task)}>
-                        Edit
+                      <Button variant="primary" onClick={() => handleEditClick(task)}>
+                        Update
                       </Button>
                     </td>
                     <td>

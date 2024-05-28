@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Form, Container, Card, Button, Row, Col } from "react-bootstrap";
-import logo from "../images/Logo.PNG";
+import logo from "../images/logo.png";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../firebase";
 import { useNavigate, Link } from "react-router-dom"; // Import Link
@@ -46,9 +46,9 @@ export default function Login() {
         <Row>
           <Col xs={12} md={6}>
             <div className="text-left">
-              <img src={logo} alt="Logo" className="mb-4" />
+              <img src={logo} alt="Logo" className="mb-4"  style={{height:"8rem"}}/>
               <h2>LOGIN</h2>
-              <p>Use Your Expense Tracker</p>
+              <p>Schedule and Manage Tasks</p>
             </div>
           </Col>
           <Col xs={12} md={6}>
