@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Form, Container, Card, Button, Row, Col } from "react-bootstrap";
-import logo from "../images/logo.png";
+import logo from "../images/lg.png";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../firebase";
 import { useNavigate, Link } from "react-router-dom"; // Import Link
