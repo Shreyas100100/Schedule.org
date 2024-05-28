@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { doc, updateDoc, collection, getDocs, query, where, deleteDoc } from "firebase/firestore";
 import { db, auth } from "../../firebase";
 import { Table, Container, Card, Button, Modal, Form, Spinner } from "react-bootstrap";
+import './ViewTasks.css'; // Importing the CSS file
 
 export default function ViewTasks() {
   const [tasks, setTasks] = useState([]);
@@ -109,14 +110,14 @@ export default function ViewTasks() {
   }
 
   return (
-    <Container className="d-flex flex-column justify-content-center align-items-center " style={{ paddingTop: "2rem" }}>
+    <Container className="d-flex flex-column justify-content-center align-items-center" style={{ paddingTop: "2rem" }}>
       <Card className="w-100">
         <Card.Body>
           <Card.Title>
             <h2 style={{ textAlign: "center" }}>View Tasks</h2>
           </Card.Title>
           <div className="table-responsive">
-            <Table striped bordered hover>
+            <Table striped bordered hover className="table-fixed">
               <thead>
                 <tr>
                   <th>#</th>
